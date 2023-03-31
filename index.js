@@ -1,6 +1,7 @@
 const puppeteer = require('puppeteer');
+const reddit = require('./reddit');
 
-const SetSelected = async (options, page, selec) => {
+const SetSelected = async (options) => {
 
     // Generierung eines Node Elementes um die Selected Property auf True zu setzten
     const handleOptionEvents = await options.asElement()
@@ -14,6 +15,15 @@ const SetSelected = async (options, page, selec) => {
 
 (async () => {
     try{
+        if(true){
+            try{
+                reddit()
+            }catch(e){
+                console.log(e.message)
+            }
+            
+
+        } else {
         // Lounch sichtbaren Browser über Chromium
         const browser = await puppeteer.launch({
             headless: false,
@@ -60,13 +70,11 @@ const SetSelected = async (options, page, selec) => {
                                     await submit_btn.click()
                                     await page.waitForSelector('select._aau-');
                                 }
-                                
-                                
                                 const selectElm = await page.$$('select._aau-')
                                 // Iteration durch die 3 Select-Elems
-                                
+                                var worked = false
                                 Array.from(selectElm).forEach( async (selec) => {
-                                
+                                    
                                     // Deklarierung der Ziel Optionen
                                     var options = null, year = false
                                     try{
@@ -83,7 +91,7 @@ const SetSelected = async (options, page, selec) => {
                                     // Trigger des Dropdown Menus
                                     // await selec.click()
 
-                                    await SetSelected(options, page, selec)
+                                    await SetSelected(options)
                                     
                                     if(year){
                                         var inter = setInterval(async()=>{
@@ -93,43 +101,60 @@ const SetSelected = async (options, page, selec) => {
                                                 // l
                                                 // Trigger Dropdown Menu
                                                 setTimeout(async()=>{
+                                                    if(worked) return;
                                                     await new Promise( async (resolve, reject) => {
-                                                        resolve( await selec.click() )
+                                                        await selec.click()
                                                         console.log('select is clicked')
+                                                        resolve()
                                                     })
 
                                                     // Selected Option ist automatisch ausgewählt, muss aber durch ein Event getriggert werden.
                                                     await new Promise( async (resolve, reject) => {
                                                         setTimeout( async () => {
+                                                            if(worked) return resolve();
                                                             await selec.press('Enter') 
                                                             console.log('on selected element is Enter pressed')  
                                                             await page.mouse.move(10, 10)
                                                             await page.mouse.click(10, 10)  
-                                                            resolve( clearInterval(inter) )
+                                                            clearInterval(inter)
+                                                            worked = true
+                                                            await handleNextBtn(page)
+                                                            resolve()
                                                         },1000)    
                                                     })
                                                 },1000)
-
-                                                // l
                                             }
                                         },1000)
-
-                                    }
-                                    
+                                    }                                    
                                 })
                                 
-                                
+                                // _acan _acap _acaq _acas _aj1-
+
+
                             }
                         },500)
+
 
                     }    
                 }    
             }                
         }
+    }
     }catch(e){
         console.log(e)
     }
 })();
+const handleNextBtn = async ( page ) => {
+    console.log('handle next btn is runs')
+    const nextBtn = await page.waitForSelector(FormatStr('_acan _acap _acaq _acas _aj1-'))
+    await nextBtn.click()
+}
+const FormatStr = (str) => {
+    str = str.replaceAll(' ', '.')
+    str = '.'+str
+    return str
+}
+
 
 /*
 (async()=>{
@@ -196,13 +221,7 @@ const SetSelected = async (options, page, selec) => {
         console.log(e)
     }
 
-})()
-const FormatStr = (str) => {
-    str = str.replaceAll(' ', '.')
-    str = '.'+str
-    return str
-}
-*/
+})()*/
 
 
 
