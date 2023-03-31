@@ -2,30 +2,19 @@ const puppeteer = require('puppeteer');
 
 const SetSelected = async (options, page, selec) => {
 
-    const handleOptionEvents = options.asElement()
+    // Generierung eines Node Elementes um die Selected Property auf True zu setzten
+    const handleOptionEvents = await options.asElement()
+
     await handleOptionEvents.evaluate( async (option) => {
-        option.selected = true;
-        console.log('selected option is true')
-                
-        // await options.focus()
-        // console.log('option is focused')
-    
-        // await page.keyboard.press('Enter')
-        // console.log('Enter on keyboard is pressed')
-        
+        option.selected = true;        
     })
-
-    await selec.click()
-    await page.keyboard.press('Enter')
-    console.log('selected element is clicked and Enter is pressed')
-
 
 }
 
 
 (async () => {
     try{
-
+        // Lounch sichtbaren Browser über Chromium
         const browser = await puppeteer.launch({
             headless: false,
             product: 'chrome'
@@ -34,14 +23,18 @@ const SetSelected = async (options, page, selec) => {
         await page.setViewport({width: 1280, height: 800});
         await page.goto('https://www.instagram.com/accounts/emailsignup');
 
+        // Cookiebanner bestätigen
         const consentCookies = await page.waitForSelector('._a9--._a9_0');
         consentCookies.click()
+
+        // Warten bis Content geladen ist
         await page.waitForSelector('._aa4b._add6._ac4d')
         const emailOrPhone = await page.$("[name=\"emailOrPhone\"]")
         const fullName = await page.$("[name=\"fullName\"]")
         const username = await page.$("[name=\"username\"]")
         const password = await page.$("[name=\"password\"]")
         
+        // Tippt die Strings in die Input Felder
         if( emailOrPhone !== null ){
             await emailOrPhone.type('don.reply.456@gmail.com')
         
@@ -57,7 +50,10 @@ const SetSelected = async (options, page, selec) => {
                             const submit_btn = await page.$("[type=\"submit\"]")
                             if(submit_btn!==null){
                                 clearInterval(inter_0)
+                                // Submit des Formulars mit Nutzerdaten
                                 await submit_btn.click()   
+                                
+                                // Abwarten bis der Content der nächsten Seite geladen ist
                                 try{
                                     await page.waitForSelector('select._aau-');
                                 }catch(e){
@@ -65,52 +61,63 @@ const SetSelected = async (options, page, selec) => {
                                     await page.waitForSelector('select._aau-');
                                 }
                                 
-                                // Abwarten das Content geladen ist
-                                const selectElm = await page.$$('select._aau-')
                                 
-                                Promise.all(
-                                    Array.from(selectElm).forEach( async (selec) => {
-                                    
-                                    
-                                    var options=null
+                                const selectElm = await page.$$('select._aau-')
+                                // Iteration durch die 3 Select-Elems
+                                
+                                Array.from(selectElm).forEach( async (selec) => {
+                                
+                                    // Deklarierung der Ziel Optionen
+                                    var options = null, year = false
                                     try{
+                                        // Ersten beiden optionenen für den Monat und Tag 
+                                        // können mit jeweils value=3 angesprochen werden  
                                         options = await selec.waitForSelector('option[value="3"]')
                                         console.log('options element with value 3 is running')
                                     }catch(e){
+                                        // Geht value=3 ist das Feld für Jahr fokusiert und kann mit value=1995 gewählt werden  
                                         options = await selec.waitForSelector('option[value="1995"]')
                                         console.log('options element with value 1955 is running')
+                                        year = true
                                     }
-                                    await selec.click()
+                                    // Trigger des Dropdown Menus
+                                    // await selec.click()
 
                                     await SetSelected(options, page, selec)
                                     
+                                    if(year){
+                                        var inter = setInterval(async()=>{
+                                            const testHandle = await options.asElement()
+                                            const check = await testHandle.evaluate( el => el.selected )
+                                            if( check === true ){
+                                                // l
+                                                // Trigger Dropdown Menu
+                                                setTimeout(async()=>{
+                                                    await new Promise( async (resolve, reject) => {
+                                                        resolve( await selec.click() )
+                                                        console.log('select is clicked')
+                                                    })
+
+                                                    // Selected Option ist automatisch ausgewählt, muss aber durch ein Event getriggert werden.
+                                                    await new Promise( async (resolve, reject) => {
+                                                        setTimeout( async () => {
+                                                            await selec.press('Enter') 
+                                                            console.log('on selected element is Enter pressed')  
+                                                            await page.mouse.move(10, 10)
+                                                            await page.mouse.click(10, 10)  
+                                                            resolve( clearInterval(inter) )
+                                                        },1000)    
+                                                    })
+                                                },1000)
+
+                                                // l
+                                            }
+                                        },1000)
+
+                                    }
                                     
                                 })
-                                )
-
-                                /*
-                                const options = await page.$$('._aau- option[value="11"]');
-
-                                Array.from(options).forEach( async (opt_el) => {
-
-                                    const optionHandle = opt_el.asElement();
-                                    // Setzen Sie das selected-Attribut auf true
-                                    await optionHandle.evaluate( async (opt) => {                                            
-                                        opt.selected = true;
-                                        opt.click()
-                                    });
-                                    
-                                })
-
-                                const options_year = await page.$('._aau- option[value="1995"]');
-                                const op_year = options_year.asElement()
-
-                                await op_year.evaluate( async (opy)=>{
-                                    opy.selected = true;
-
-                                    opt.click()
-                                })
-                                */
+                                
                                 
                             }
                         },500)
