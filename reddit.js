@@ -118,13 +118,13 @@ const SubmitPost = async (page) => {
     console.log('\x1b[32mPOST CONTENT!')
 }
 
-module.exports = async () => {
+module.exports = async (type = 'URL') => {
     try{
+        // SETUP BROWSER CONFIG
         const browser = await puppeteer.launch({
             headless: false, 
             product: 'chrome'
         })
-
         const page = await browser.newPage()
         await page.setViewport({width: 1280, height: 800});
 
@@ -136,8 +136,15 @@ module.exports = async () => {
 
         await HandleLogin(page)
         await SetUpPost(page, 'iphone')
-        await CreateUrlPost(page)
-        await SubmitPost(page)
+
+        switch(type){
+            case type === 'URL': 
+                await CreateUrlPost(page)
+                await SubmitPost(page)
+            default:
+                console.log('\x1b[38mNO POST TYPE SELECTED OR TYPE IS NOT PROVIDED')
+        }
+        
 
 
     }catch(e){
