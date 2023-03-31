@@ -8,9 +8,10 @@
   },
   "author": "",
   "license": "ISC",
-  "description": "",
   "dependencies": {
     "firefox": "^0.0.1",
     "puppeteer": "^19.8.2"
-  }
+  },
+  "devDependencies": {},
+  "description": ""
 }

@@ -1,7 +1,31 @@
 const puppeteer = require('puppeteer');
 
+const SetSelected = async (options, page, selec) => {
+
+    const handleOptionEvents = options.asElement()
+    await handleOptionEvents.evaluate( async (option) => {
+        option.selected = true;
+        console.log('selected option is true')
+                
+        // await options.focus()
+        // console.log('option is focused')
+    
+        // await page.keyboard.press('Enter')
+        // console.log('Enter on keyboard is pressed')
+        
+    })
+
+    await selec.click()
+    await page.keyboard.press('Enter')
+    console.log('selected element is clicked and Enter is pressed')
+
+
+}
+
+
 (async () => {
     try{
+
         const browser = await puppeteer.launch({
             headless: false,
             product: 'chrome'
@@ -33,10 +57,38 @@ const puppeteer = require('puppeteer');
                             const submit_btn = await page.$("[type=\"submit\"]")
                             if(submit_btn!==null){
                                 clearInterval(inter_0)
-                                await submit_btn.click()         
-                                await page.waitForSelector('select._aau-');
+                                await submit_btn.click()   
+                                try{
+                                    await page.waitForSelector('select._aau-');
+                                }catch(e){
+                                    await submit_btn.click()
+                                    await page.waitForSelector('select._aau-');
+                                }
+                                
                                 // Abwarten das Content geladen ist
+                                const selectElm = await page.$$('select._aau-')
+                                
+                                Promise.all(
+                                    Array.from(selectElm).forEach( async (selec) => {
+                                    
+                                    
+                                    var options=null
+                                    try{
+                                        options = await selec.waitForSelector('option[value="3"]')
+                                        console.log('options element with value 3 is running')
+                                    }catch(e){
+                                        options = await selec.waitForSelector('option[value="1995"]')
+                                        console.log('options element with value 1955 is running')
+                                    }
+                                    await selec.click()
 
+                                    await SetSelected(options, page, selec)
+                                    
+                                    
+                                })
+                                )
+
+                                /*
                                 const options = await page.$$('._aau- option[value="11"]');
 
                                 Array.from(options).forEach( async (opt_el) => {
@@ -45,9 +97,9 @@ const puppeteer = require('puppeteer');
                                     // Setzen Sie das selected-Attribut auf true
                                     await optionHandle.evaluate( async (opt) => {                                            
                                         opt.selected = true;
-                                    
+                                        opt.click()
                                     });
-                                    await opt_el.press('Enter')
+                                    
                                 })
 
                                 const options_year = await page.$('._aau- option[value="1995"]');
@@ -55,7 +107,10 @@ const puppeteer = require('puppeteer');
 
                                 await op_year.evaluate( async (opy)=>{
                                     opy.selected = true;
+
+                                    opt.click()
                                 })
+                                */
                                 
                             }
                         },500)
