@@ -118,7 +118,7 @@ const SubmitPost = async (page) => {
     console.log('\x1b[32mPOST CONTENT!')
 }
 
-module.exports = async (type = 'URL') => {
+module.exports = async (options) => {
     try{
         // SETUP BROWSER CONFIG
         const browser = await puppeteer.launch({
@@ -135,11 +135,11 @@ module.exports = async (type = 'URL') => {
         })
 
         await HandleLogin(page)
-        await SetUpPost(page, 'iphone')
+        await SetUpPost(page, options.community)
 
-        switch(type){
+        switch(options.type){
             case type === 'URL': 
-                await CreateUrlPost(page)
+                await CreateUrlPost(page, options.title, options.url)
                 await SubmitPost(page)
             default:
                 console.log('\x1b[38mNO POST TYPE SELECTED OR TYPE IS NOT PROVIDED')

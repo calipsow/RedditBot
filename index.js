@@ -17,14 +17,19 @@ const SetSelected = async (options) => {
     try{
         if(true){
             try{
-                reddit()
+                await reddit({
+                    title: 'I had never such an awesome iPhone case like this! The case levels my iPhone directly 10 miles up! :D Check out the link and see by yourself! :)',
+                    community: 'iphone',
+                    url: 'https://callipson.com/en-us/products/astronaut-phone-case-doodle-moon-cartoon-eye-protection',
+                    type: 'URL'
+                })
             }catch(e){
                 console.log(e.message)
             }
             
 
         } else {
-        // Lounch sichtbaren Browser über Chromium
+        // Lounch sichtbaren Browser über Chromium Instagram
         const browser = await puppeteer.launch({
             headless: false,
             product: 'chrome'
