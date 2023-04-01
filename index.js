@@ -13,18 +13,41 @@ const SetSelected = async (options) => {
 }
 
 
+
 (async () => {
     try{
         if(true){
             try{
+                /*
                 await reddit({
                     title: 'I had never such an awesome iPhone case like this! The case levels my iPhone directly 10 miles up! :D Check out the link and see by yourself! :)',
                     community: 'iphone',
                     url: 'https://callipson.com/en-us/products/astronaut-phone-case-doodle-moon-cartoon-eye-protection',
                     type: 'URL'
                 })
+                */
+                await reddit({
+                    type: 'PHOTO',
+                    community: 'iphone',
+                    title: 'Are you ready to bring your iPhone up on the next level? :) Then get your iPhone a new hard cover from https://callipson.com/en-us/collections/iphone-hullen-und-schutzfolien. Browse from a range of awesome cases and find the perfect fit for you! <:D',
+                    photoPath: [
+                        'c:/users/user/onedrive/bilder/Shopify Bilder/produkte/bd0c2658-5ca3-4c0c-a2f5-07ccdbbe298b.jpg',
+                        'c:/users/user/onedrive/bilder/Shopify Bilder/produkte/image_cef3243a-a961-4620-90c0-4d5e8f1ab9c7.jpg',
+                        'c:/users/user/onedrive/bilder/Shopify Bilder/produkte/image_34868a75-06bd-4f24-a0ca-0987462bfdef.jpg'
+                    ], 
+                    shopUrl: [
+                        'https://callipson.com/en-us/products/happy-planet-soft-shell-silicone-phone-case',
+                        'https://callipson.com/en-us/products/astronaut-phone-case-doodle-moon-cartoon-eye-protection?variant=43781856133348',
+                        'https://callipson.com/en-us/products/mobile-phone-shell-astronaut-silicone-all-inclusive-edge-drop-protection'
+                    ],
+                    photoDescription: [
+                        'Happy Planet Soft Shell Case - New in Stock, Secure yours Too! Only - 27.70 USD',
+                        'Moon Cartoon Astronaut Case - Get Yours While it\'s in Stock! - 19.94 USD',
+                        'iPhone Case Flying Astronaut - Now on Sale! Only - 22.16 USD'
+                    ]
+                })
             }catch(e){
-                console.log(e.message)
+                console.log(e)
             }
             
 
