@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer')
 const path = require('path')
+require('dotenv').config()
 
 const FormatStr = (str) => {
     str = str.replaceAll(' ', '.')
@@ -30,8 +31,8 @@ const HandleLogin = async (page) =>  {
     const passw = await loginForm.waitForSelector('input#loginPassword')
     
     // TYPE LOGIN DATA AND LOGGING IN
-    await username.type('Difficult-Mix-BT')
-    await passw.type('#Mvemjwun9587')
+    await username.type(process.env.ACC)
+    await passw.type(process.env.PASSW)
 
     const submitBtn = await loginForm.waitForSelector('button.AnimatedForm__submitButton.m-full-width')
 
@@ -192,7 +193,7 @@ const CreatePhotoPost = async (page, title = '', photoPath = [], shopUrl = [], p
                 page.waitForTimeout(5000),
                 console.log(`File ${path} uploaded successfully.`),
                 results.push(true),
-                // warten bis die Datei hochgeladen ist
+                // wait until the file is uploaded
                 span = await page.waitForSelector('span._3mOObaE2qUuGBwPZt06QMP'),
                 fileInput = await span.waitForSelector('input[type="file"]')
             ]);
@@ -223,8 +224,6 @@ const CreatePhotoPost = async (page, title = '', photoPath = [], shopUrl = [], p
     }
    
 }
-// C:/Users/User\Desktop\Bots\bots\reddit.js
-// "C:\Users\User\OneDrive\Bilder\Shopify Bilder\Produkte\bd0c2658-5ca3-4c0c-a2f5-07ccdbbe298b.jpg"
 
 module.exports = async (options) => {
     try{

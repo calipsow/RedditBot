@@ -1,16 +1,17 @@
 {
-  "name": "googlecrawler",
+  "name": "reddit_bot",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node index.js"
   },
-  "author": "",
-  "license": "ISC",
+  "author": "calipsow",
+  "license": "MIT",
   "dependencies": {
     "firefox": "^0.0.1",
-    "puppeteer": "^19.8.2"
+    "puppeteer": "^19.8.2",
+    "dotenv":"^16.3.1"
   },
   "devDependencies": {},
   "description": ""
